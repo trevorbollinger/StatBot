@@ -1,0 +1,19 @@
+.timeline-graph {
+    background-color: #1e1e1e;
+    border-radius: var(--border-radius-md);
+    padding: 10px;
+    width: 100%;
+    height: 200px;
+}
+
+.timeline-graph canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Hide y-axis ticks on mobile */
+@media (max-width: 768px) {
+    .timeline-graph .chartjs-y-axis .chartjs-tick {
+        display: none;
+    }
+}

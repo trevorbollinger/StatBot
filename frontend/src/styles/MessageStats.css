@@ -1,0 +1,58 @@
+.message-stats-container {
+  max-width: var(--page-width);
+  margin: 0 auto;
+  color: var(--text-primary);
+  isolation: isolate;
+}
+
+.chart-container {
+  background: var(--blur-background);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--box-shadow);
+  margin: var(--spacing-lg) 0;
+}
+
+.stats-loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.stat-card {
+  cursor: pointer;
+  position: relative;
+}
+
+.stat-card.copied::after {
+  content: 'Copied!';
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  animation: fadeOut 1.5s forwards;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media screen and (max-width: 768px) {
+  .message-stats-container {
+    padding: var(--spacing-sm);
+  }
+
+  .chart-container {
+    padding: var(--spacing-sm);
+    margin: var(--spacing-sm) 0;
+    overflow-x: auto;
+  }
+}

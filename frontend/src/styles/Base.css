@@ -1,0 +1,399 @@
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('https://www.apple.com/wss/fonts/SF-Pro-Display/v3/sf-pro-display_regular.woff2') format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('https://www.apple.com/wss/fonts/SF-Pro-Display/v3/sf-pro-display_semibold.woff2') format('woff2');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('https://www.apple.com/wss/fonts/SF-Pro-Text/v3/sf-pro-text_regular.woff2') format('woff2');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url('https://www.apple.com/wss/fonts/SF-Pro-Text/v3/sf-pro-text_semibold.woff2') format('woff2');
+  font-weight: 600;
+}
+
+
+
+html, body, #root {
+  width: 100%;
+  overflow-x: hidden;
+  align-items: flex-start; 
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: url('../assets/sbackground.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--text-primary);
+  min-height: 100vh;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: var(--blur-background);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  padding: 0;  /* Remove top padding */
+  margin-top: 5rem;  /* Add margin-top to create gap below navbar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.sidebar a {
+  display: block;
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 0.8rem 1.5rem;
+  margin: 0.3rem 0.8rem;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition-base);
+  font-weight: 500;
+  font-family: var(--font-text);
+}
+
+.sidebar a:hover {
+  background-color: var(--secondary-blur-background);
+}
+
+.sidebar a.active {
+  background-color: var(--secondary-blur-background);
+  color: #fff;
+}
+
+.nested-link {
+  padding-left: 2.5rem !important;
+  color: #a0a0a0 !important;
+}
+
+.nested-link::before {
+  content: "└";
+  margin-right: 8px;
+}
+
+.nested-link:hover {
+  color: #ffffff !important;
+}
+
+.nested-link.active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.navbar {
+  width: 100%; 
+  display: flex;  
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--blur-background);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0.8rem 1.3rem;
+  margin: 0;
+  height: 3.5rem;  /* Fixed height for navbar */
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+
+
+
+
+.interval-select {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+  border-radius: var(--border-radius-sm);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.interval-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+
+.interval-select {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+  border-radius: var(--border-radius-sm);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.interval-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 150px;  /* Add minimum width */
+}
+
+.navbar-right {
+  margin-left: auto;  /* Push to the right */
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 15px;
+}
+
+
+
+.navbar-logo {
+  color: #e0e0e0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: lowercase;
+  margin: 0;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.greeting {
+  color: #a0a0a0;
+  font-size: 1.55rem;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.body-content {
+  margin-left: 200px;
+  margin-top: 5rem;  /* Match navbar height exactly */
+  padding: 10px 0 0 10px;
+  width: calc(100% - 200px);
+  box-sizing: border-box;
+  isolation: isolate;
+  border-radius: var(--border-radius-md);
+  padding-right: 10px;
+}
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+  background-color: #2a2a2a !important;
+}
+
+.message-detail {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: #e0e0e0;
+  border-radius: var(--border-radius-sm);
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.input-disabled {
+  background-color: #2a2a2a !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.form-group input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+  display: none;
+}
+
+.sidebar-toggle-container {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  background-color: var(--secondary-blur-background);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  padding: 6px;
+  padding-right: 12px;
+  padding-left: 10px;
+  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 15px;
+  border-radius: var(--border-radius-lg);
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+
+
+@media screen and (max-width: 768px) {
+  .mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 2.5rem; 
+    padding: 0;  
+    cursor: pointer;
+    width: 40px;  
+    height: 40px;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    width: 250px;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .navbar {
+    width: 100%;
+    margin-left: 0;
+    padding: 0.5rem;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+  }
+
+  .body-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 5px;
+    padding-top: 0rem;
+  }
+
+  .navbar-left {
+    padding-left: 0;
+    width: 150px;
+  }
+
+  .navbar-logo {
+    margin-top: -2px;
+    margin-left: -10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-right {
+    gap: 0.5rem;
+  }
+
+  .greeting {
+    font-size: 1.2rem;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+  
+  .sidebar-toggle-container {
+    display: block;
+    margin: 10px 8px;
+    padding: 8px 15px;
+    font-family: var(--font-text);
+    font-weight: 500;
+  }
+  
+  .sidebar-toggle-container .toggle {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .sidebar-toggle-container label {
+    font-weight: 500;
+  }
+}

@@ -1,0 +1,10 @@
+discord.py==2.0.1
+python-dotenv==1.0.0
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.21.1
+django
+djangorestframework
+django-cors-headers
+pytz
+
+

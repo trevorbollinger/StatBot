@@ -1,0 +1,164 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  max-width: 400px;
+  width: 100%;
+  margin: auto;
+  padding: var(--spacing-sm);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.greeting {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.greeting h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.login-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.login-form {
+  background: var(--dark-background);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 400px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border-color);
+  animation: slideIn 0.5s ease-in-out;
+  margin: auto;
+}
+
+.login-title {
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+  font-size: 2.5rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.login-input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 1.6rem;
+  background-color: var(--border-color);
+  color: var(--text-primary);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.login-input:focus {
+  border-color: var(--accent-blue);
+  background-color: #444;
+}
+
+.login-button {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background-color: var(--accent-blue);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: var(--box-shadow);
+}
+
+.login-button:hover {
+  background-color: var(--accent-blue-hover);
+}
+
+.login-button:active {
+  transform: scale(0.98);
+}
+
+.login-link {
+  display: block;
+  margin-top: var(--spacing-sm);
+  text-align: center;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+  font-weight: bold;
+}
+
+.login-link:hover {
+  text-decoration: underline;
+  color: var(--accent-blue-hover);
+}
+
+.error {
+  color: red;
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+  font-size: 1.25rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInOut 0.3s ease-in-out;
+  opacity: 1;
+}
+
+.loading-overlay.fade-out {
+  animation: fadeInOut 0.3s ease-in-out reverse;
+}
+
+@keyframes fadeInOut {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(5px);
+  }
+}

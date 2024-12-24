@@ -1,0 +1,71 @@
+services:
+  db:
+    container_name: Stats-Postgres
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "db", "-U", "user"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+  django:
+    container_name: Stats-Django
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8069:8000"
+    volumes:
+      - ./backend:/app
+      - ./config.js:/app/backend/config.js
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py create_superuser &&
+             python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+  react:
+    container_name: Stats-React
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "8068:5173"
+    volumes:
+      - ./frontend:/app
+      - ./config.js:/app/src/config.js
+    command: >
+      sh -c "
+            npm audit fix &&
+            npm install &&
+            npm run dev -- --host"
+  discord:
+    container_name: Stats-Bot
+    build: 
+      context: ./discord
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./discord:/app
+      - ./backend:/backend
+      - ./config.js:/app/config.js
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=backend.settings
+      - PYTHONPATH=/backend
+    working_dir: /app
+    command: python main.py
+    depends_on:
+      - django
+
+volumes:
+  db-data:
