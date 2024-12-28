@@ -7,7 +7,8 @@ from .view.DatabaseViews import DatabaseView, DatabaseMessageDetailView, FilterO
 from .view.ChannelStatsView import ChannelsStatsView
 from .view.MessageTimelineView import MessageTimelineView
 from .view.MessagesStatsView import MessagesStatsView
-from .view.AverageMessageView import AverageMessageView  # Add this import
+from .view.AverageMessageView import AverageMessageView 
+from .view.ChannelProfileView import ChannelProfileView
 
 router = routers.DefaultRouter()
 router.register(r'messages', MessageViewSet)
@@ -23,6 +24,7 @@ urlpatterns = [
     path('database/messages/<int:pk>/', DatabaseMessageDetailView.as_view(), name='database-message-detail'),
     path('database/filter-options/', FilterOptionsView.as_view(), name='database-filter-options'),
     path('discorduser/<str:username>/', DiscordUserDetailView.as_view(), name='discord-user-detail'),
+    path('channel/<str:channel_name>/', ChannelProfileView.as_view(), name='channel-profile'),
     path('user-messages-stats/<str:username>/', UserMessageSums.as_view(), name='user-messages-stats'),
     path('stats/average-message/', AverageMessageView.as_view(), name='message-length-stats'),
 ] + router.urls

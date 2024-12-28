@@ -165,7 +165,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding-right: 15px;
+  padding-right: 10px;
 }
 
 .navbar-logo {
@@ -352,7 +352,6 @@ body {
     margin-left: 0;
     width: 100%;
     padding: 5px;
-    padding-top: 0rem;
   }
 
   .navbar-left {
@@ -369,6 +368,7 @@ body {
 
   .navbar-right {
     gap: 0.5rem;
+    padding-right: 0;
   }
 
   .greeting {
