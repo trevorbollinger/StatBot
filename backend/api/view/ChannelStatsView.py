@@ -10,17 +10,31 @@ class ChannelsStatsView(APIView):
 
     def get(self, request):
         # Get excluded users from query params
-        excluded_users = request.query_params.get('exclude', '').split(',')
+        excluded_users = request.query_params.get('exclude_user', '').split(',')
         excluded_users = [user.strip() for user in excluded_users if user.strip()]
 
-        print(f"Excluding users: {excluded_users}")  # Debug log
+        # Get excluded channels from query params
+        excluded_channels = request.query_params.get('exclude_channel', '').split(',')
+        excluded_channels = [channel.strip() for channel in excluded_channels if channel.strip()]
 
-        # Base queryset for messages excluding specified users
-        message_filter = ~Q(messages__author__name__in=excluded_users) if excluded_users else Q()
+        # Get bot exclusion parameter
+        exclude_bots = request.query_params.get('exclude_bots', '').lower() == 'true'
+
+        # Build base message filter
+        message_filter = Q()
+        if excluded_users:
+            message_filter &= ~Q(messages__author__name__in=excluded_users)
+        if exclude_bots:
+            message_filter &= ~Q(messages__author__is_bot=True)
+
+        # Base queryset excluding specified channels
+        base_query = Channel.objects
+        if excluded_channels:
+            base_query = base_query.exclude(name__in=excluded_channels)
 
         # Get channel stats with annotations
         channel_stats = (
-            Channel.objects
+            base_query
             .annotate(
                 filtered_messages=Count(
                     'messages',
@@ -58,23 +72,37 @@ class ChannelsStatsView(APIView):
             )
         )
 
-        # Calculate total stats
-        total_stats = {
-            'total_messages': 0,
-            'total_words': 0,
-            'total_characters': 0
-        }
+        # Calculate total stats with all filters applied
+        total_stats_filter = Q()
+        if excluded_channels:
+            total_stats_filter &= ~Q(channel__name__in=excluded_channels)
+        if excluded_users:
+            total_stats_filter &= ~Q(author__name__in=excluded_users)
+        if exclude_bots:
+            total_stats_filter &= ~Q(author__is_bot=True)
+
+        total_stats = Message.objects.filter(total_stats_filter).aggregate(
+            total_messages=Count('id'),
+            total_words=Sum('word_count'),
+            total_characters=Sum('char_count')
+        )
 
         results = []
         for channel in channel_stats:
             if channel['filtered_messages'] == 0:
                 continue
 
-            # Get most active user with proper exclusion
+            # Build user stats filter
+            user_filter = Q(channel__name=channel['name'])
+            if excluded_users:
+                user_filter &= ~Q(author__name__in=excluded_users)
+            if exclude_bots:
+                user_filter &= ~Q(author__is_bot=True)
+
+            # Get most active user with proper exclusions
             user_stats = (
                 Message.objects
-                .filter(channel__name=channel['name'])
-                .exclude(author__name__in=excluded_users if excluded_users else [])
+                .filter(user_filter)
                 .values('author__name')
                 .annotate(count=Count('id'))
                 .order_by('-count')
@@ -88,11 +116,6 @@ class ChannelsStatsView(APIView):
                 user_percentage = 0
                 most_active_user = 'unknown'
 
-            # Update total stats
-            total_stats['total_messages'] += channel['filtered_messages']
-            total_stats['total_words'] += channel['filtered_words'] or 0
-            total_stats['total_characters'] += channel['filtered_chars'] or 0
-
             results.append({
                 'channel_name': channel['name'],
                 'message_count': channel['filtered_messages'],
@@ -105,7 +128,6 @@ class ChannelsStatsView(APIView):
                 'most_active_user_percentage': round(user_percentage, 1)
             })
 
-        # Sort by message count
         results.sort(key=lambda x: x['message_count'], reverse=True)
 
         return Response({

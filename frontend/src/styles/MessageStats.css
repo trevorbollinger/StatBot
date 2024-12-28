@@ -26,7 +26,7 @@
 }
 
 .stat-card.copied::after {
-  content: 'Copied!';
+  content: "Copied!";
   position: absolute;
   bottom: -30px;
   left: 50%;
@@ -40,9 +40,15 @@
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @media screen and (max-width: 768px) {

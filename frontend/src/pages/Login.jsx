@@ -5,7 +5,7 @@ import { useAuth } from "../components/AuthContext"; // Import the useAuth hook
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import LoadingIndicator from "../components/LoadingIndicator";
 import "../styles/Login.css?v=1.0";
-import { CONFIG } from '../config.js'; 
+import { CONFIG } from "../config.js";
 
 function Login() {
   const auth = useAuth();
@@ -26,9 +26,9 @@ function Login() {
       // First, get the tokens
       const tokenRes = await api.post("/api/token/", { username, password });
       if (!tokenRes.data.access || !tokenRes.data.refresh) {
-        throw new Error('Invalid token response');
+        throw new Error("Invalid token response");
       }
-      
+
       // Store the tokens
       localStorage.setItem(ACCESS_TOKEN, tokenRes.data.access);
       localStorage.setItem(REFRESH_TOKEN, tokenRes.data.refresh);
@@ -37,19 +37,19 @@ function Login() {
       try {
         const userRes = await api.get("/api/user/me/");
         const { first_name, last_name } = userRes.data;
-        
+
         auth.login(username, first_name, last_name);
         navigate("/");
       } catch (userError) {
-        console.error('Error fetching user details:', userError);
-        throw new Error('Failed to fetch user details');
+        console.error("Error fetching user details:", userError);
+        throw new Error("Failed to fetch user details");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       setError(
-        error.response?.data?.detail || 
-        error.message || 
-        "Invalid username or password"
+        error.response?.data?.detail ||
+          error.message ||
+          "Invalid username or password"
       );
     } finally {
       setFadeOut(true);
@@ -60,7 +60,7 @@ function Login() {
   return (
     <>
       {loading && (
-        <div className={`loading-overlay ${fadeOut ? 'fade-out' : ''}`}>
+        <div className={`loading-overlay ${fadeOut ? "fade-out" : ""}`}>
           <LoadingIndicator />
         </div>
       )}

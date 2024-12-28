@@ -18,20 +18,26 @@ class UsersStatsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        # Get excluded users from query params
+        excluded_users = request.query_params.get('exclude_user', '').split(',')
+        excluded_users = [user.strip() for user in excluded_users if user.strip()]
+
         # Get excluded channels from query params
-        excluded_channels = request.query_params.get('exclude', '').split(',')
+        excluded_channels = request.query_params.get('exclude_channel', '').split(',')
         excluded_channels = [channel.strip() for channel in excluded_channels if channel.strip()]
 
         # Get bot exclusion parameter
-        exclude_bots = request.query_params.get('exclude_bot', '').lower() == 'true'
+        exclude_bots = request.query_params.get('exclude_bots', '').lower() == 'true'
 
         # Build channel filter
         channel_filter = ~Q(messages__channel__name__in=excluded_channels) if excluded_channels else Q()
         
-        # Add bot filter if requested
+        # Add bot filter and user exclusion filter
         base_query = DiscordUser.objects
         if exclude_bots:
             base_query = base_query.filter(is_bot=False)
+        if excluded_users:
+            base_query = base_query.exclude(name__in=excluded_users)
 
         user_stats = (
             base_query
@@ -84,12 +90,14 @@ class UsersStatsView(APIView):
             )
         )
 
-        # Update total stats query to match bot exclusion
+        # Update total stats query to match all exclusions
         total_stats_filter = Q()
         if excluded_channels:
             total_stats_filter &= ~Q(channel__name__in=excluded_channels)
         if exclude_bots:
             total_stats_filter &= ~Q(author__is_bot=True)
+        if excluded_users:  # Add this block
+            total_stats_filter &= ~Q(author__name__in=excluded_users)
 
         total_stats = (
             Message.objects

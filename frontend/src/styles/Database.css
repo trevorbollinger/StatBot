@@ -91,7 +91,7 @@
   padding: 12px;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
-  vertical-align: top;  /* Align all cells to top */
+  vertical-align: top; /* Align all cells to top */
 }
 
 .table th {
@@ -103,7 +103,8 @@
   background: #202020;
 }
 
-.table td:nth-child(5) {  /* Content column */
+.table td:nth-child(5) {
+  /* Content column */
   max-width: 300px;
   white-space: normal;
   word-wrap: break-word;

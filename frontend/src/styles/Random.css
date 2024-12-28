@@ -1,5 +1,5 @@
 .rand-container {
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: 0 10px;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding: 0 10px;
 }

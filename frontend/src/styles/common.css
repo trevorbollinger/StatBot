@@ -4,10 +4,10 @@
   --blur-amount: 14px;
   --body-blur-amount: 14px;
   --secondary-blur-background: rgba(120, 110, 118, 0.158);
-  --dark-background: rgba(30,30,30,0.8);
-  --darker-background: rgba(26,26,26,0.8);
+  --dark-background: rgba(30, 30, 30, 0.8);
+  --darker-background: rgba(26, 26, 26, 0.8);
   --solid-dark-background: #252525;
-  
+
   /* Colors */
   --text-primary: #e0e0e0;
   --text-secondary: #a0a0a0;
@@ -21,23 +21,25 @@
   --accent-red: #c52222;
   --accent-red-hover: #9e2020;
   --accent-red-disabled: #5f1c1c;
-  
+
   /* Shadows */
   --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   --box-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  
+
   /* Border Radius */
   --border-radius-sm: 6px;
   --border-radius-md: 12px;
   --border-radius-lg: 18px;
-  
+
   /* Transitions */
   --transition-base: all 0.2s ease;
-  
+
   /* Font Families */
-  --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-text: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+  --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+
   /* Spacing */
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
@@ -59,7 +61,8 @@
 /* General Button */
 .button {
   background: var(--blur-background);
-  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
   font-size: var(--font-size-2xl);
   font-weight: 600;
   line-height: 21px;
@@ -120,7 +123,6 @@
   flex-direction: column;
   justify-content: space-between;
   transition: all 0.2s ease;
-
 }
 .stat-card:hover {
   transform: scale(1.03);
@@ -149,7 +151,8 @@
   padding: 6px;
   padding-right: 10px;
   padding-left: 10px;
-  font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
   font-size: 15px;
   border-radius: var(--border-radius-lg);
 }
@@ -179,7 +182,7 @@
   margin-left: auto;
 }
 .custom-checkbox::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 2px;
   left: 2px;
@@ -199,7 +202,7 @@
 /* Toast Notification */
 .toast-container {
   position: fixed;
-  top: 20px;  /* Changed from bottom: 20px */
+  top: 20px; /* Changed from bottom: 20px */
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -213,18 +216,28 @@
   box-shadow: var(--box-shadow);
   font-family: var(--font-text);
   font-size: var(--font-size-sm);
-  animation: slideDown 0.3s ease, fadeOut 3s ease 0.5s forwards;  /* Changed from slideUp */
+  animation: slideDown 0.3s ease, fadeOut 3s ease 0.5s forwards; /* Changed from slideUp */
   backdrop-filter: blur(var(--blur-amount));
   -webkit-backdrop-filter: blur(var(--blur-amount));
 }
 
-@keyframes slideDown {  /* Changed from slideUp */
-  from { transform: translateY(-100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+@keyframes slideDown {
+  /* Changed from slideUp */
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
-

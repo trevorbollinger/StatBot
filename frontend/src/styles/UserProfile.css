@@ -128,7 +128,7 @@
 }
 
 .refresh-stats-button.refreshing::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0.5rem;
   width: 1rem;
