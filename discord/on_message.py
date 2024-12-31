@@ -13,13 +13,21 @@ async def get_or_create_guild(guild):
     if not guild:
         return None
     
-    guild_obj, _ = await sync_to_async(Guild.objects.get_or_create)(
+    guild_obj, created = await sync_to_async(Guild.objects.get_or_create)(
         id=str(guild.id),
         defaults={
             'name': guild.name,
             'icon_url': str(guild.icon.url) if guild.icon else None
         }
     )
+    
+    # Update guild info even if it exists
+    if not created:
+        await sync_to_async(Guild.objects.filter(id=str(guild.id)).update)(
+            name=guild.name,
+            icon_url=str(guild.icon.url) if guild.icon else None
+        )
+    
     return guild_obj
 
 async def get_or_create_channel(channel, guild_obj):
@@ -38,7 +46,7 @@ async def get_or_create_channel(channel, guild_obj):
         category_id = str(channel.category.id)
         category_name = channel.category.name
 
-    channel_obj, _ = await sync_to_async(Channel.objects.get_or_create)(
+    channel_obj, created = await sync_to_async(Channel.objects.get_or_create)(
         id=str(channel.id),
         defaults={
             'guild': guild_obj,
@@ -49,6 +57,17 @@ async def get_or_create_channel(channel, guild_obj):
             'topic': channel.topic if hasattr(channel, 'topic') else None
         }
     )
+
+    # Update channel info even if it exists
+    if not created:
+        await sync_to_async(Channel.objects.filter(id=str(channel.id)).update)(
+            name=channel.name if hasattr(channel, 'name') else "Unknown",
+            type=channel_type,
+            category_id=category_id,
+            category_name=category_name,
+            topic=channel.topic if hasattr(channel, 'topic') else None
+        )
+
     return channel_obj
 
 async def get_or_create_user(author, guild_obj):
@@ -57,21 +76,36 @@ async def get_or_create_user(author, guild_obj):
     if hasattr(author, 'roles'):
         roles_data = [str(role.id) for role in author.roles]
 
+    # Get member object for additional info
+    member = author.guild.get_member(author.id) if hasattr(author, 'guild') else None
+    nickname = member.nick if member else None
+
     user_obj, created = await sync_to_async(DiscordUser.objects.get_or_create)(
         id=str(author.id),
         defaults={
             'name': author.name,
             'discriminator': getattr(author, 'discriminator', '0000'),
-            'nickname': getattr(author, 'nick', None),
+            'nickname': nickname,
             'avatar_url': str(author.avatar.url) if author.avatar else None,
             'color': str(author.color) if hasattr(author, 'color') else None,
             'is_bot': author.bot,
         }
     )
 
+    # Update user info even if it exists
+    if not created:
+        await sync_to_async(DiscordUser.objects.filter(id=str(author.id)).update)(
+            name=author.name,
+            discriminator=getattr(author, 'discriminator', '0000'),
+            nickname=nickname,
+            avatar_url=str(author.avatar.url) if author.avatar else None,
+            color=str(author.color) if hasattr(author, 'color') else None
+        )
+
+    # Update roles
     if hasattr(author, 'roles'):
         for role in author.roles:
-            await sync_to_async(Role.objects.get_or_create)(
+            role_obj, _ = await sync_to_async(Role.objects.get_or_create)(
                 id=str(role.id),
                 defaults={
                     'guild': guild_obj,
@@ -80,12 +114,16 @@ async def get_or_create_user(author, guild_obj):
                     'position': role.position
                 }
             )
+            # Update role info
+            if not _:
+                await sync_to_async(Role.objects.filter(id=str(role.id)).update)(
+                    name=role.name,
+                    color=str(role.color) if role.color else None,
+                    position=role.position
+                )
 
-    if not created:
+        # Update user's roles
         await sync_to_async(user_obj.roles.set)(roles_data)
-    else:
-        roles = await sync_to_async(Role.objects.filter)(id__in=roles_data)
-        await sync_to_async(user_obj.roles.set)(roles)
 
     return user_obj
 
@@ -105,6 +143,13 @@ async def extract_inline_emojis(message):
             }
             inline_emojis.append(emoji_data)
     return inline_emojis
+
+async def get_member_nickname(author):
+    """Safely get member nickname"""
+    if hasattr(author, 'guild'):
+        member = author.guild.get_member(author.id)
+        return member.nick if member else None
+    return None
 
 async def handle_message(message, bot):
     # Removed the bot check here to allow bot messages to be logged
@@ -222,12 +267,16 @@ async def handle_message(message, bot):
         if message.reactions:
             await handle_reactions(message_obj, message.reactions)
 
-        # Log success
+        # Log success with safe nickname handling
         formatted_time = message.created_at.strftime("[%d/%b/%Y %H:%M:%S]")
-        print(f"{formatted_time} Logged message by {message.author.name} in {message.channel.name}")
+        nickname = await get_member_nickname(message.author)
+        author_display = f"{message.author.name} ({nickname})" if nickname else message.author.name
+        print(f"{formatted_time} Logged message by {author_display} in {message.channel.name}")
 
     except Exception as e:
-        print(f"Error handling message: {e}")
+        print(f"Error handling message: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
 
     await bot.process_commands(message)
 

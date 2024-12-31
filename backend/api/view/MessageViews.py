@@ -21,7 +21,7 @@ class RecentMessagesView(APIView):
         # Get the last 100 messages
         messages = Message.objects.select_related(
             'author', 'channel'
-        ).order_by('-timestamp')[:100]
+        ).order_by('-timestamp')[:75]
         
         def count_words(text):
             return len(re.findall(r'\w+', text))
@@ -31,6 +31,7 @@ class RecentMessagesView(APIView):
             message_data.append({
                 'id': message.id,
                 'user_name': message.author.name,
+                'nickname': message.author.nickname,
                 'user_id': message.author.id,
                 'channel_name': message.channel.name,
                 'timestamp': message.timestamp,

@@ -12,6 +12,7 @@ const Statistics = () => {
   const [channelData, setChannelData] = useState(null);
   const [initialLoading, setInitialLoading] = useState(true);
   const [includeBots, setIncludeBots] = useState(false);
+  const [loadedViews, setLoadedViews] = useState({ users: true, channels: false });
   const navigate = useNavigate();
   const { refreshTrigger, autoRefresh } = useRefresh();
 
@@ -57,7 +58,7 @@ const Statistics = () => {
     if (autoRefresh) {
       intervalId = setInterval(() => {
         fetchData(showUserStats);
-      }, 5000); // Changed from 100000 to 20000 (20 seconds)
+      }, 5000);
     }
 
     return () => {
@@ -70,9 +71,20 @@ const Statistics = () => {
   const handleRadioChange = (e) => {
     const isUserStats = e.target.id === "radio-1";
     setShowUserStats(isUserStats);
-
-    // Always fetch new data when switching views
-    fetchData(isUserStats);
+    
+    // Only set loading if we haven't loaded this view before
+    if (!loadedViews[isUserStats ? 'users' : 'channels']) {
+      setInitialLoading(true);
+      fetchData(isUserStats).then(() => {
+        setInitialLoading(false);
+        setLoadedViews(prev => ({
+          ...prev,
+          [isUserStats ? 'users' : 'channels']: true
+        }));
+      });
+    } else {
+      fetchData(isUserStats);
+    }
   };
 
   const handleRowClick = (item) => {
@@ -90,59 +102,64 @@ const Statistics = () => {
       className="statistics-container fade-in"
       data-active-index={showUserStats ? "0" : "1"}
     >
-      <div className="stats-header">
-        <div className="custom-tabs-container">
-          <div className="custom-tabs">
-            <input
-              type="radio"
-              id="radio-1"
-              name="tabs"
-              defaultChecked
-              onChange={handleRadioChange}
-            />
-            <label className="custom-tab" htmlFor="radio-1">
-              User
-            </label>
-            <input
-              type="radio"
-              id="radio-2"
-              name="tabs"
-              onChange={handleRadioChange}
-            />
-            <label className="custom-tab" htmlFor="radio-2">
-              Channel
-            </label>
-            <span className="custom-glider"></span>
+      <div className="main-content">
+        <div className="stats-header">
+          <div className="custom-tabs-container">
+            <div className="custom-tabs">
+              <input
+                type="radio"
+                id="radio-1"
+                name="tabs"
+                defaultChecked
+                onChange={handleRadioChange}
+              />
+              <label className="custom-tab" htmlFor="radio-1">
+                User
+              </label>
+              <input
+                type="radio"
+                id="radio-2"
+                name="tabs"
+                onChange={handleRadioChange}
+              />
+              <label className="custom-tab" htmlFor="radio-2">
+                Channel
+              </label>
+              <span className="custom-glider"></span>
+            </div>
           </div>
         </div>
-
-        <div className="toggle-container stats-toggle">
-          <label className="toggle">
-            Include Bots
-            <input
-              type="checkbox"
-              checked={includeBots}
-              onChange={(e) => {
-                setIncludeBots(e.target.checked);
-                fetchData(showUserStats);
-              }}
-            />
-            <span className="custom-checkbox"></span>
-          </label>
+        <div className="stats-content">
+          {!initialLoading && (
+            <div className="side-controls">
+              <div className="toggle-container stats-toggle">
+                <label className="toggle">
+                  Include Bots
+                  <input
+                    type="checkbox"
+                    checked={includeBots}
+                    onChange={(e) => {
+                      setIncludeBots(e.target.checked);
+                      fetchData(showUserStats);
+                    }}
+                  />
+                  <span className="custom-checkbox"></span>
+                </label>
+              </div>
+            </div>
+          )}
+          {initialLoading ? (
+            <LoadingIndicator />
+          ) : (
+            currentData && (
+              <Table
+                data={currentData}
+                showUserStats={showUserStats}
+                onRowClick={handleRowClick}
+              />
+            )
+          )}
         </div>
-      </div>
-      <div className="stats-content">
-        {initialLoading ? (
-          <LoadingIndicator />
-        ) : (
-          currentData && (
-            <Table
-              data={currentData}
-              showUserStats={showUserStats}
-              onRowClick={handleRowClick}
-            />
-          )
-        )}
       </div>
     </div>
   );

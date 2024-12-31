@@ -227,7 +227,9 @@ function Home() {
               <div className="message-content-wrapper">
                 <div className="message-header">
                   <div className="message-meta">
-                    <span className="message-author">{msg.user_name}</span>
+                    <span className="message-author">
+                      {msg.nickname || msg.user_name}
+                    </span>
                     <span className="message-channel">#{msg.channel_name}</span>
                     <span className="message-time">{msg.relative_time}</span>
                     <div className="message-stats">
